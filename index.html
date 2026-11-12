@@ -90,7 +90,7 @@ footer{margin-top:56px;color:var(--mute);font-size:14px}
     <div class="list" id="list"></div>
   </section>
   <section class="level">
-    <h2>Intermediate <small>3 of 10 live, more coming</small></h2>
+    <h2>Intermediate <small>7 of 10 live, more coming</small></h2>
     <div class="list" id="list2"></div>
   </section>
   <section class="level">
@@ -571,7 +571,123 @@ footer{margin-top:56px;color:var(--mute);font-size:14px}
   </div>
 </main>
 
-<footer>Free to use. Built for QA learners. 9 beginner and 3 intermediate scenarios are live.</footer>
+<main id="upload" class="hidden">
+  <p><a href="#home">Back to all scenarios</a></p>
+  <div class="lab">
+    <section class="panel" aria-labelledby="upt">
+      <h2 id="upt">Upload and download</h2>
+      <p class="sub">Allowed: TXT, CSV, PNG, JPG. Max size 1 MB. Files are checked in your browser and never sent anywhere.</p>
+      <label for="fileInput">Choose a file</label>
+      <input id="fileInput" type="file" accept=".txt,.csv,.png,.jpg" data-testid="file-input">
+      <p class="count" id="upInfo" data-testid="file-info">No file selected</p>
+      <button class="primary" type="button" id="upBtn" data-testid="upload-button">Upload</button>
+      <div id="upMsg" class="alert hidden" role="status" data-testid="upload-message"></div>
+      <h3 style="font-size:18px;margin:26px 0 0">Download</h3>
+      <div class="row2"><button class="ghost" type="button" id="dlCsv" data-testid="download-csv">Download report.csv</button><button class="ghost" type="button" id="dlTxt" data-testid="download-txt">Download notes.txt</button></div>
+      <div class="stat" id="dlStatus" role="status" data-testid="download-status">No download yet</div>
+    </section>
+    <section class="panel" aria-labelledby="uptt">
+      <h2 id="uptt">Scenario 4: File upload and download</h2>
+      <p class="sub">Level: Intermediate</p>
+      <div class="hint">Skills practiced: set input files, file type and size validation, reading downloaded files. Downloads work on the hosted site, not inside the Claude preview.</div>
+      <h3 style="font-size:18px;margin:22px 0 4px">Test cases to write</h3>
+      <details><summary>Valid upload</summary><p>Upload a small <code>.txt</code> file. Expect “Uploaded: name (n bytes, n lines)”.</p></details>
+      <details><summary>No file</summary><p>Click Upload with nothing chosen. Expect “Choose a file first.”</p></details>
+      <details><summary>Wrong type</summary><p>Upload a <code>.pdf</code>. Expect “Only TXT, CSV, PNG and JPG files are allowed.”</p></details>
+      <details><summary>Too large</summary><p>Create a file over 1 MB in your test and upload it. Expect “File must be 1 MB or smaller.” Exactly 1 MB passes.</p></details>
+      <details><summary>Download content</summary><p>Download report.csv, open it in your test, and assert 4 lines with header <code>id,name,score</code> and Anna scored 90.</p></details>
+    </section>
+  </div>
+</main>
+
+<main id="frames" class="hidden">
+  <p><a href="#home">Back to all scenarios</a></p>
+  <div class="lab">
+    <section class="panel" aria-labelledby="frt">
+      <h2 id="frt">iFrames and windows</h2>
+      <p class="sub">Elements inside an iframe are not reachable until you switch to the frame.</p>
+      <p data-testid="outside-text" style="font-weight:600">This text is outside the iframe.</p>
+      <iframe id="practiceFrame" name="practiceFrame" title="Practice frame" data-testid="practice-frame" style="width:100%;height:170px;border:1.5px solid var(--line);border-radius:6px;background:#fff"></iframe>
+      <div class="row2">
+        <button class="ghost" type="button" id="popupBtn" data-testid="popup-button">Open popup window</button>
+        <a href="#nav-about" target="_blank" rel="noopener" id="frTab" data-testid="new-tab-link">Open About in a new tab</a>
+      </div>
+    </section>
+    <section class="panel" aria-labelledby="frtt">
+      <h2 id="frtt">Scenario 5: iFrames and multiple windows</h2>
+      <p class="sub">Level: Intermediate</p>
+      <div class="hint">Skills practiced: frame locators, switching to a frame and back, handling new tabs and popup windows, window handles.</div>
+      <h3 style="font-size:18px;margin:22px 0 4px">Test cases to write</h3>
+      <details><summary>Find the frame</summary><p>Locate the iframe by name or title. Assert it has the heading “Inside the iframe”.</p></details>
+      <details><summary>Type inside the frame</summary><p>Enter a name, click Say hello, and assert “Hello, &lt;name&gt;!”. With empty input it says “Hello, stranger!”.</p></details>
+      <details><summary>Back to the main page</summary><p>After the frame steps, switch back and assert the outside text is still visible.</p></details>
+      <details><summary>Popup window</summary><p>Click Open popup. A second window opens on the Contact page. Assert its title, close it, and return to the first window.</p></details>
+      <details><summary>New tab</summary><p>The new tab link opens About in another tab. Assert the tab count is 2.</p></details>
+    </section>
+  </div>
+</main>
+
+<main id="shadow" class="hidden">
+  <p><a href="#home">Back to all scenarios</a></p>
+  <div class="lab">
+    <section class="panel" aria-labelledby="sht">
+      <h2 id="sht">Shadow DOM</h2>
+      <p class="sub">The form below lives inside an open shadow root.</p>
+      <div id="shadowHost" data-testid="shadow-host"></div>
+    </section>
+    <section class="panel" aria-labelledby="shtt">
+      <h2 id="shtt">Scenario 6: Shadow DOM</h2>
+      <p class="sub">Level: Intermediate</p>
+      <div class="hint">Skills practiced: piercing shadow roots. Playwright pierces open shadow DOM by default. Selenium needs <code>getShadowRoot()</code>. Cypress needs <code>includeShadowDom: true</code>.</div>
+      <h3 style="font-size:18px;margin:22px 0 4px">Test cases to write</h3>
+      <details><summary>Find the host</summary><p>The host element <code>shadowHost</code> is in the normal DOM. The input inside it is not found by a plain document query.</p></details>
+      <details><summary>Type and click</summary><p>Enter <code>Anna</code>, click Greet, assert “Hello, Anna!”. Empty input gives “Hello, stranger!”.</p></details>
+      <details><summary>Nested shadow</summary><p>A second shadow root sits inside the first. Click the Nested shadow button and assert “Nested button clicked”.</p></details>
+    </section>
+  </div>
+</main>
+
+<main id="advform" class="hidden">
+  <p><a href="#home">Back to all scenarios</a></p>
+  <div class="lab">
+    <section class="panel" aria-labelledby="abt">
+      <h2 id="abt">Book an event</h2>
+      <p class="sub">Fields are validated when you leave them, and again on submit.</p>
+      <form id="abForm" novalidate data-testid="booking-form">
+        <label for="abName">Event name</label>
+        <input id="abName" type="text" autocomplete="off" data-testid="event-name"><p class="err" id="abNameErr" data-testid="event-name-error" role="alert"></p>
+        <label for="abStart">Start date</label>
+        <input id="abStart" type="date" data-testid="start-date"><p class="err" id="abStartErr" data-testid="start-date-error" role="alert"></p>
+        <label for="abEnd">End date</label>
+        <input id="abEnd" type="date" data-testid="end-date"><p class="err" id="abEndErr" data-testid="end-date-error" role="alert"></p>
+        <label for="abPeople">Attendees (1 to 10)</label>
+        <input id="abPeople" type="number" data-testid="attendees"><p class="err" id="abPeopleErr" data-testid="attendees-error" role="alert"></p>
+        <label for="abType">Ticket type</label>
+        <select id="abType" data-testid="ticket-type"><option value="free">Free</option><option value="paid">Paid</option></select>
+        <div id="abPriceRow" class="hidden"><label for="abPrice">Price (must be above 0)</label>
+        <input id="abPrice" type="number" data-testid="price"><p class="err" id="abPriceErr" data-testid="price-error" role="alert"></p></div>
+        <label for="abPromo">Promo code (optional, format ABC-123)</label>
+        <input id="abPromo" type="text" autocomplete="off" data-testid="promo"><p class="err" id="abPromoErr" data-testid="promo-error" role="alert"></p>
+        <button class="primary" type="submit" id="abSubmit" data-testid="book-button">Book event</button>
+        <div id="abResult" class="alert success hidden" role="status" data-testid="booking-result"></div>
+      </form>
+    </section>
+    <section class="panel" aria-labelledby="abtt">
+      <h2 id="abtt">Scenario 7: Advanced form validation</h2>
+      <p class="sub">Level: Intermediate</p>
+      <div class="hint">Skills practiced: validation on blur, cross-field rules, conditional fields, boundary values, pattern checks.</div>
+      <h3 style="font-size:18px;margin:22px 0 4px">Test cases to write</h3>
+      <details><summary>Validate on blur</summary><p>Click into Event name and tab away empty. The error shows immediately, before any submit.</p></details>
+      <details><summary>Cross-field date rule</summary><p>Start 2026-12-10 and End 2026-12-09 gives “End date cannot be before the start date.” Same day is valid.</p></details>
+      <details><summary>Attendee boundaries</summary><p>0 and 11 fail. 1 and 10 pass. 2.5 fails.</p></details>
+      <details><summary>Conditional field</summary><p>Price is hidden for Free. Choose Paid and it appears and is required. 0 fails, 499 passes.</p></details>
+      <details><summary>Promo code</summary><p><code>ABC-123</code> passes. <code>abc-123</code>, <code>AB-123</code> and <code>ABC-12</code> fail.</p></details>
+      <details><summary>Valid booking</summary><p>Fill everything correctly. Expect “Event booked” with the name, attendees and ticket type.</p></details>
+    </section>
+  </div>
+</main>
+
+<footer>Free to use. Built for QA learners. 9 beginner and 7 intermediate scenarios are live.</footer>
 </div>
 
 <script>
@@ -596,7 +712,7 @@ SCENARIOS.forEach(function(s,i){
   list.appendChild(el);
 });
 
-var INTER=[["dynamic","Dynamic elements and waits","Spinners, delayed elements, changing IDs, enabled after delay",1],["grid","Sortable, filterable, paginated table","Search, filter, sort columns, next and previous page",1],["uiactions","Hover, drag and drop, slider, date picker","Mouse actions and special inputs",1],["","File upload and download","Validate type, size and content",0],["","iFrames and multiple windows","Switch frames, tabs and windows",0],["","Shadow DOM","Elements inside shadow roots",0],["","Advanced form validation","Inline errors and cross-field rules",0],["","Shopping cart flow","Add, remove, update quantity, totals",0],["","Cookies and local storage","Read, set and clear browser storage",0],["","Infinite scroll and lazy loading","Content that loads while scrolling",0]];
+var INTER=[["dynamic","Dynamic elements and waits","Spinners, delayed elements, changing IDs, enabled after delay",1],["grid","Sortable, filterable, paginated table","Search, filter, sort columns, next and previous page",1],["uiactions","Hover, drag and drop, slider, date picker","Mouse actions and special inputs",1],["upload","File upload and download","Validate type, size and content, download files",1],["frames","iFrames and multiple windows","Switch frames, tabs and windows",1],["shadow","Shadow DOM","Elements inside shadow roots, nested shadow",1],["advform","Advanced form validation","Inline errors and cross-field rules",1],["","Shopping cart flow","Add, remove, update quantity, totals",0],["","Cookies and local storage","Read, set and clear browser storage",0],["","Infinite scroll and lazy loading","Content that loads while scrolling",0]];
 var list2=document.getElementById("list2");
 INTER.forEach(function(s,i){
   var el=document.createElement(s[3]?"a":"div");
@@ -608,12 +724,12 @@ INTER.forEach(function(s,i){
 });
 function route(){
   var h=(location.hash||"#home").slice(1);
-  if(["login","register","checks","dropdowns","buttons","inputs","alerts","tables","navigation","nav-about","nav-contact","dynamic","grid","uiactions"].indexOf(h)<0)h="home";
+  if(["login","register","checks","dropdowns","buttons","inputs","alerts","tables","navigation","nav-about","nav-contact","dynamic","grid","uiactions","upload","frames","shadow","advform"].indexOf(h)<0)h="home";
   document.getElementById("home").classList.toggle("hidden",h!=="home");
   document.getElementById("login").classList.toggle("hidden",h!=="login");
   document.getElementById("register").classList.toggle("hidden",h!=="register");
-  ["checks","dropdowns","buttons","inputs","alerts","tables","navigation","nav-about","nav-contact","dynamic","grid","uiactions"].forEach(function(k){document.getElementById(k).classList.toggle("hidden",h!==k)});
-  document.title=(h==="login"?"Login form | ":h==="register"?"Registration form | ":h==="checks"?"Checkboxes and radio buttons | ":h==="dropdowns"?"Dropdowns | ":h==="buttons"?"Buttons and links | ":h==="inputs"?"Text inputs | ":h==="alerts"?"Alerts and popups | ":h==="tables"?"Static tables | ":h==="navigation"?"Navigation practice | ":h==="nav-about"?"About page | ":h==="nav-contact"?"Contact page | ":h==="dynamic"?"Dynamic elements | ":h==="grid"?"Product table | ":h==="uiactions"?"Mouse actions | ":"")+"QA Practice Lab";
+  ["checks","dropdowns","buttons","inputs","alerts","tables","navigation","nav-about","nav-contact","dynamic","grid","uiactions","upload","frames","shadow","advform"].forEach(function(k){document.getElementById(k).classList.toggle("hidden",h!==k)});
+  document.title=(h==="login"?"Login form | ":h==="register"?"Registration form | ":h==="checks"?"Checkboxes and radio buttons | ":h==="dropdowns"?"Dropdowns | ":h==="buttons"?"Buttons and links | ":h==="inputs"?"Text inputs | ":h==="alerts"?"Alerts and popups | ":h==="tables"?"Static tables | ":h==="navigation"?"Navigation practice | ":h==="nav-about"?"About page | ":h==="nav-contact"?"Contact page | ":h==="dynamic"?"Dynamic elements | ":h==="grid"?"Product table | ":h==="uiactions"?"Mouse actions | ":h==="upload"?"File upload and download | ":h==="frames"?"iFrames and windows | ":h==="shadow"?"Shadow DOM | ":h==="advform"?"Event booking form | ":"")+"QA Practice Lab";
   if(h==="login")prefill();
   window.scrollTo(0,0);
 }
@@ -831,6 +947,52 @@ g("slider").addEventListener("input",function(){g("sliderVal").textContent=this.
 g("datePick").addEventListener("change",function(){
   var v=this.value;
   g("dateOut").textContent=v?"Selected: "+v+" ("+new Date(v+"T00:00:00").toLocaleDateString("en-US",{weekday:"long"})+")":"No date selected";
+});
+var MAXF=1048576,OKX=["txt","csv","png","jpg"];
+function um(t,k){var m=g("upMsg");m.textContent=t;m.className="alert "+k}
+g("fileInput").addEventListener("change",function(){var f=this.files[0];g("upInfo").textContent=f?"Selected: "+f.name+" ("+(f.size/1024).toFixed(1)+" KB)":"No file selected";g("upMsg").className="alert hidden"});
+g("upBtn").addEventListener("click",function(){
+  var f=g("fileInput").files[0];
+  if(!f){um("Choose a file first.","error");return}
+  var x=f.name.split(".").pop().toLowerCase();
+  if(OKX.indexOf(x)<0){um("Only TXT, CSV, PNG and JPG files are allowed.","error");return}
+  if(f.size>MAXF){um("File must be 1 MB or smaller.","error");return}
+  if(x==="txt"||x==="csv"){var r=new FileReader();r.onload=function(){um("Uploaded: "+f.name+" ("+f.size+" bytes, "+r.result.split(/\r?\n/).filter(Boolean).length+" lines)","success")};r.readAsText(f)}
+  else um("Uploaded: "+f.name+" ("+f.size+" bytes)","success");
+});
+function dl(name,text,type){var a=document.createElement("a");a.href=URL.createObjectURL(new Blob([text],{type:type}));a.download=name;document.body.appendChild(a);a.click();a.remove();g("dlStatus").textContent="Download started: "+name}
+g("dlCsv").addEventListener("click",function(){dl("report.csv","id,name,score\n1,Anna,90\n2,Bala,85\n3,Chitra,78\n","text/csv")});
+g("dlTxt").addEventListener("click",function(){dl("notes.txt","QA Practice Lab sample notes.\n","text/plain")});
+g("practiceFrame").srcdoc="<body style='font-family:sans-serif;padding:12px;color:#14213d'><h3 id='frameTitle'>Inside the iframe</h3><input id='frameInput' placeholder='Type here'> <button id='frameBtn' onclick=\"document.getElementById('frameOut').textContent='Hello, '+(document.getElementById('frameInput').value||'stranger')+'!'\">Say hello</button><p id='frameOut'></p></body>";
+g("popupBtn").addEventListener("click",function(){window.open(location.pathname+location.search+"#nav-contact","_blank","width=520,height=420")});
+var sr=g("shadowHost").attachShadow({mode:"open"});
+sr.innerHTML='<style>label{display:block;font-weight:600;margin:8px 0 6px}input{width:100%;box-sizing:border-box;padding:10px;font-family:inherit;font-size:16px;color:var(--ink);background:var(--bg);border:1.5px solid var(--line);border-radius:6px}button{margin-top:10px;padding:10px 16px;font-family:inherit;font-weight:600;font-size:15px;color:var(--brand);background:transparent;border:1.5px solid var(--brand);border-radius:6px;cursor:pointer}p{font-weight:600}</style><label for="sname">Name (inside shadow DOM)</label><input id="sname" data-testid="shadow-input"><button id="sbtn" data-testid="shadow-button">Greet</button><p id="sout" data-testid="shadow-output"></p><div id="nestedHost"></div>';
+sr.getElementById("sbtn").addEventListener("click",function(){sr.getElementById("sout").textContent="Hello, "+(sr.getElementById("sname").value||"stranger")+"!"});
+var nr=sr.getElementById("nestedHost").attachShadow({mode:"open"});
+nr.innerHTML='<style>button{margin-top:6px;padding:8px 14px;font-family:inherit;font-weight:600;font-size:14px;color:#14213d;background:var(--hi);border:0;border-radius:6px;cursor:pointer}</style><button id="nbtn" data-testid="nested-button">Nested shadow button</button><span id="nout" data-testid="nested-output" style="margin-left:10px"></span>';
+nr.getElementById("nbtn").addEventListener("click",function(){nr.getElementById("nout").textContent="Nested button clicked"});
+function abVal(){
+  var e={},n=g("abName").value.trim(),s=g("abStart").value,en=g("abEnd").value,p=g("abPeople").value,t=g("abType").value,pr=g("abPrice").value,pc=g("abPromo").value.trim();
+  if(!n)e.abName="Event name is required.";else if(n.length<3)e.abName="Event name needs at least 3 characters.";
+  if(!s)e.abStart="Start date is required.";
+  if(!en)e.abEnd="End date is required.";else if(s&&en<s)e.abEnd="End date cannot be before the start date.";
+  if(p==="")e.abPeople="Attendees is required.";else if(!(Number(p)>=1&&Number(p)<=10)||Number(p)%1)e.abPeople="Attendees must be a whole number from 1 to 10.";
+  if(t==="paid"){if(pr==="")e.abPrice="Price is required for paid tickets.";else if(!(Number(pr)>0))e.abPrice="Price must be greater than 0."}
+  if(pc&&!/^[A-Z]{3}-\d{3}$/.test(pc))e.abPromo="Promo code format is ABC-123.";
+  return e;
+}
+["abName","abStart","abEnd","abPeople","abPrice","abPromo"].forEach(function(id){
+  g(id).addEventListener("blur",function(){setErr(id,abVal()[id]||"")});
+});
+g("abType").addEventListener("change",function(){g("abPriceRow").classList.toggle("hidden",this.value!=="paid");g("abPrice").value="";setErr("abPrice","")});
+g("abForm").addEventListener("submit",function(ev){
+  ev.preventDefault();
+  var e=abVal(),bad=false;
+  ["abName","abStart","abEnd","abPeople","abPrice","abPromo"].forEach(function(id){setErr(id,e[id]||"");if(e[id])bad=true});
+  g("abResult").className="alert success hidden";
+  if(bad)return;
+  g("abResult").textContent="Event booked: "+g("abName").value.trim()+", "+g("abPeople").value+" attendees, "+g("abType").value+" ticket.";
+  g("abResult").className="alert success";
 });
 document.getElementById("themeBtn").addEventListener("click",function(){
   var r=document.documentElement,dark=r.getAttribute("data-theme")==="dark"||(!r.getAttribute("data-theme")&&matchMedia("(prefers-color-scheme:dark)").matches);
