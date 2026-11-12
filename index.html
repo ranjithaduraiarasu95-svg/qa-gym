@@ -60,6 +60,7 @@ input[type=number]{width:100%;padding:11px 12px;font:inherit;color:var(--ink);ba
 .spin{width:18px;height:18px;border:3px solid var(--line);border-top-color:var(--brand);border-radius:50%;animation:sp 1s linear infinite;display:inline-block;vertical-align:middle;margin-right:8px}@keyframes sp{to{transform:rotate(360deg)}}
 .drop{min-height:56px;border:2px dashed var(--line);border-radius:8px;padding:12px;margin-top:10px}.drop.over{border-color:var(--brand)}.drag{display:inline-block;padding:8px 14px;background:var(--hi);color:#14213d;border-radius:6px;cursor:grab;margin-right:8px;font-weight:600}.menu{margin-top:6px;padding:10px;background:var(--bg);border:1px solid var(--line);border-radius:6px}
 th button{background:none;border:0;padding:0;font:600 14px "IBM Plex Sans",sans-serif;color:var(--ink)}input[type=date]{width:100%;padding:11px 12px;font:inherit;color:var(--ink);background:var(--bg);border:1.5px solid var(--line);border-radius:6px}input[type=range]{width:100%}
+.sitem{padding:12px;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:10px}.thumb{display:inline-block;min-width:76px;text-align:center;padding:10px 6px;background:var(--bg);border:1px dashed var(--line);border-radius:4px;font-size:12px;color:var(--mute)}.thumb[data-loaded="true"]{background:var(--okbg);color:var(--ok);border-style:solid}#scrollBox{height:320px;overflow:auto;border:1.5px solid var(--line);border-radius:8px}
 .hidden{display:none!important}
 details{border-bottom:1px solid var(--line);padding:10px 0}
 summary{cursor:pointer;font-weight:600}
@@ -90,7 +91,7 @@ footer{margin-top:56px;color:var(--mute);font-size:14px}
     <div class="list" id="list"></div>
   </section>
   <section class="level">
-    <h2>Intermediate <small>7 of 10 live, more coming</small></h2>
+    <h2>Intermediate <small>all 10 live</small></h2>
     <div class="list" id="list2"></div>
   </section>
   <section class="level">
@@ -687,7 +688,109 @@ footer{margin-top:56px;color:var(--mute);font-size:14px}
   </div>
 </main>
 
-<footer>Free to use. Built for QA learners. 9 beginner and 7 intermediate scenarios are live.</footer>
+<main id="cart" class="hidden">
+  <p><a href="#home">Back to all scenarios</a></p>
+  <div class="lab">
+    <section class="panel" aria-labelledby="cat">
+      <h2 id="cat">Shop</h2>
+      <p class="sub">Max 5 of each item. Coupon code: <code>QA10</code> gives 10% off. GST is 18%.</p>
+      <div class="scroll"><table><tbody>
+        <tr><td>Notebook</td><td>₹250</td><td><button class="ghost" type="button" id="add-notebook" data-add="notebook" data-testid="add-notebook">Add to cart</button></td></tr>
+        <tr><td>Pen set</td><td>₹120</td><td><button class="ghost" type="button" id="add-pens" data-add="pens" data-testid="add-pens">Add to cart</button></td></tr>
+        <tr><td>Backpack</td><td>₹1200</td><td><button class="ghost" type="button" id="add-bag" data-add="bag" data-testid="add-bag">Add to cart</button></td></tr>
+        <tr><td>Water bottle</td><td>₹450</td><td><button class="ghost" type="button" id="add-bottle" data-add="bottle" data-testid="add-bottle">Add to cart</button></td></tr>
+      </tbody></table></div>
+      <h3 style="font-size:20px;margin:24px 0 8px">Your cart</h3>
+      <div class="scroll"><table data-testid="cart-table"><thead><tr><th>Item</th><th>Qty</th><th>Total</th><th></th></tr></thead><tbody id="cartBody"></tbody></table></div>
+      <label for="cCoupon">Coupon code</label>
+      <div class="inp"><input id="cCoupon" type="text" autocomplete="off" data-testid="coupon-input"><button type="button" class="ghost" id="cCouponBtn" data-testid="coupon-apply">Apply</button></div>
+      <p class="count" id="cCouponMsg" data-testid="coupon-message" role="status"></p>
+      <table style="margin-top:10px"><tbody>
+        <tr><td>Subtotal</td><td id="cSub" data-testid="subtotal"></td></tr>
+        <tr><td>Discount</td><td id="cDisc" data-testid="discount"></td></tr>
+        <tr><td>GST (18%)</td><td id="cTax" data-testid="tax"></td></tr>
+        <tr><td><b>Total</b></td><td id="cTotal" data-testid="total"><b></b></td></tr>
+      </tbody></table>
+      <button class="primary" type="button" id="cCheckout" disabled data-testid="checkout-button">Checkout</button>
+      <div class="alert success hidden" id="cOrder" role="status" data-testid="order-message"></div>
+      <p class="err" id="cMsg" data-testid="cart-message" role="alert"></p>
+    </section>
+    <section class="panel" aria-labelledby="catt">
+      <h2 id="catt">Scenario 8: Shopping cart flow</h2>
+      <p class="sub">Level: Intermediate</p>
+      <div class="hint">Skills practiced: stateful flows, calculated values, parsing currency text, boundary values, enabled and disabled checkout.</div>
+      <h3 style="font-size:18px;margin:22px 0 4px">Test cases to write</h3>
+      <details><summary>Empty cart</summary><p>Shows “Your cart is empty.”, all totals ₹0, and Checkout is disabled.</p></details>
+      <details><summary>Add and quantity</summary><p>Add Notebook twice. Quantity 2, line total ₹500. Use + and - to change it. Going below 1 removes the item.</p></details>
+      <details><summary>Max quantity</summary><p>The sixth add or + shows “Maximum 5 per item.” and quantity stays 5.</p></details>
+      <details><summary>Totals</summary><p>Notebook x2 (₹500) with QA10: discount ₹50, GST ₹81, total ₹531. Rule: GST is on the amount after discount, rounded.</p></details>
+      <details><summary>Coupon rules</summary><p><code>QA10</code> works once (“Coupon applied: 10% off.”). A second try says “Coupon already applied.” <code>qa10</code> and <code>FREE</code> say “Invalid coupon code.”</p></details>
+      <details><summary>Remove and checkout</summary><p>Remove updates totals immediately. Checkout shows “Order placed. Total: ₹X” and empties the cart.</p></details>
+    </section>
+  </div>
+</main>
+
+<main id="storage" class="hidden">
+  <p><a href="#home">Back to all scenarios</a></p>
+  <div class="lab">
+    <section class="panel" aria-labelledby="stt">
+      <h2 id="stt">Browser storage</h2>
+      <p class="sub">Cookies, local storage and session storage. Data stays in your own browser.</p>
+      <label for="ckVal">Cookie <code>qa_user</code> value</label>
+      <input id="ckVal" type="text" autocomplete="off" data-testid="cookie-input">
+      <div class="row2"><button class="ghost" type="button" id="ckSet" data-testid="cookie-set">Set cookie</button><button class="ghost" type="button" id="ckRead" data-testid="cookie-read">Read cookie</button><button class="ghost" type="button" id="ckDel" data-testid="cookie-delete">Delete cookie</button></div>
+      <div class="stat" id="ckOut" role="status" data-testid="cookie-output">No action yet</div>
+      <label for="lsKey">Local storage key</label>
+      <input id="lsKey" type="text" autocomplete="off" data-testid="ls-key">
+      <label for="lsVal">Value</label>
+      <input id="lsVal" type="text" autocomplete="off" data-testid="ls-value">
+      <div class="row2"><button class="ghost" type="button" id="lsSave" data-testid="ls-save">Save</button><button class="ghost" type="button" id="lsRead" data-testid="ls-read">Read</button><button class="ghost" type="button" id="lsRemove" data-testid="ls-remove">Remove</button><button class="ghost" type="button" id="lsClear" data-testid="ls-clear">Clear all</button></div>
+      <div class="stat" id="lsOut" role="status" data-testid="ls-output">No action yet</div>
+      <label>Session storage counter</label>
+      <div class="row2"><button class="ghost" type="button" id="ssBtn" data-testid="session-button">Increase counter</button></div>
+      <div class="stat" id="ssOut" role="status" data-testid="session-output">Counter: 0</div>
+    </section>
+    <section class="panel" aria-labelledby="sttt">
+      <h2 id="sttt">Scenario 9: Cookies and local storage</h2>
+      <p class="sub">Level: Intermediate</p>
+      <div class="hint">Skills practiced: get, add and delete cookies through the test tool, evaluating storage in the page, storage state, session versus local. Keys are saved as <code>qalab_&lt;key&gt;</code>. Cookies need the hosted site, not a local file.</div>
+      <h3 style="font-size:18px;margin:22px 0 4px">Test cases to write</h3>
+      <details><summary>Set a cookie</summary><p>Set <code>Anna</code>. Then read the cookie with your tool (for example <code>context.cookies()</code>) and assert name <code>qa_user</code>, value <code>Anna</code>.</p></details>
+      <details><summary>Delete a cookie</summary><p>Delete it. Read shows “No cookie found”, and the tool shows no cookie.</p></details>
+      <details><summary>Add cookie from the test</summary><p>Add <code>qa_user=Bala</code> with your tool, then click Read cookie. Expect “Cookie value: Bala”.</p></details>
+      <details><summary>Local storage</summary><p>Save key <code>theme</code> and value <code>dark</code>. Read it, then reload the page and read again. It persists. Remove deletes one key, Clear all deletes all.</p></details>
+      <details><summary>Validation</summary><p>Save with an empty key shows “Key is required.”. Cookie with an empty value shows “Enter a value first.”</p></details>
+      <details><summary>Session storage</summary><p>Increase the counter 3 times. Reload and it keeps 3. Open a new tab and it starts from 0.</p></details>
+    </section>
+  </div>
+</main>
+
+<main id="scroll" class="hidden">
+  <p><a href="#home">Back to all scenarios</a></p>
+  <div class="lab">
+    <section class="panel" aria-labelledby="sct">
+      <h2 id="sct">Endless list</h2>
+      <p class="sub">Scroll down inside the box. More items load at the bottom.</p>
+      <div id="scrollBox" tabindex="0" data-testid="scroll-box"><div id="scrollList"></div>
+        <p id="scrollLoad" class="hidden" style="padding:12px" data-testid="scroll-loading"><span class="spin"></span>Loading more…</p>
+        <p id="scrollEnd" class="hidden" style="padding:12px;font-weight:600" data-testid="scroll-end">End of list</p></div>
+      <p class="count" id="scrollInfo" data-testid="scroll-info" aria-live="polite"></p>
+    </section>
+    <section class="panel" aria-labelledby="sctt">
+      <h2 id="sctt">Scenario 10: Infinite scroll and lazy loading</h2>
+      <p class="sub">Level: Intermediate</p>
+      <div class="hint">Skills practiced: scrolling a container, waiting for new content, counting items, lazy-loaded thumbnails (<code>data-loaded</code>).</div>
+      <h3 style="font-size:18px;margin:22px 0 4px">Test cases to write</h3>
+      <details><summary>Initial load</summary><p>10 items show at first. Info reads “Showing 10 of 50”.</p></details>
+      <details><summary>Load more</summary><p>Scroll the box to the bottom. After a short loading message, 20 items show.</p></details>
+      <details><summary>Reach the end</summary><p>Keep scrolling until “End of list” shows with exactly 50 items. Scrolling more adds nothing.</p></details>
+      <details><summary>Lazy thumbnails</summary><p>A thumbnail has <code>data-loaded="false"</code> until it scrolls into view, then <code>"true"</code> and reads “Loaded”. Assert this on item 1 and on a far item.</p></details>
+      <details><summary>No duplicates</summary><p>Collect all item names after reaching the end and assert Item 1 to Item 50 appear once each.</p></details>
+    </section>
+  </div>
+</main>
+
+<footer>Free to use. Built for QA learners. 9 beginner and 10 intermediate scenarios are live.</footer>
 </div>
 
 <script>
@@ -712,7 +815,7 @@ SCENARIOS.forEach(function(s,i){
   list.appendChild(el);
 });
 
-var INTER=[["dynamic","Dynamic elements and waits","Spinners, delayed elements, changing IDs, enabled after delay",1],["grid","Sortable, filterable, paginated table","Search, filter, sort columns, next and previous page",1],["uiactions","Hover, drag and drop, slider, date picker","Mouse actions and special inputs",1],["upload","File upload and download","Validate type, size and content, download files",1],["frames","iFrames and multiple windows","Switch frames, tabs and windows",1],["shadow","Shadow DOM","Elements inside shadow roots, nested shadow",1],["advform","Advanced form validation","Inline errors and cross-field rules",1],["","Shopping cart flow","Add, remove, update quantity, totals",0],["","Cookies and local storage","Read, set and clear browser storage",0],["","Infinite scroll and lazy loading","Content that loads while scrolling",0]];
+var INTER=[["dynamic","Dynamic elements and waits","Spinners, delayed elements, changing IDs, enabled after delay",1],["grid","Sortable, filterable, paginated table","Search, filter, sort columns, next and previous page",1],["uiactions","Hover, drag and drop, slider, date picker","Mouse actions and special inputs",1],["upload","File upload and download","Validate type, size and content, download files",1],["frames","iFrames and multiple windows","Switch frames, tabs and windows",1],["shadow","Shadow DOM","Elements inside shadow roots, nested shadow",1],["advform","Advanced form validation","Inline errors and cross-field rules",1],["cart","Shopping cart flow","Add, remove, update quantity, coupon, totals",1],["storage","Cookies and local storage","Read, set and clear browser storage",1],["scroll","Infinite scroll and lazy loading","Content that loads while scrolling",1]];
 var list2=document.getElementById("list2");
 INTER.forEach(function(s,i){
   var el=document.createElement(s[3]?"a":"div");
@@ -724,12 +827,12 @@ INTER.forEach(function(s,i){
 });
 function route(){
   var h=(location.hash||"#home").slice(1);
-  if(["login","register","checks","dropdowns","buttons","inputs","alerts","tables","navigation","nav-about","nav-contact","dynamic","grid","uiactions","upload","frames","shadow","advform"].indexOf(h)<0)h="home";
+  if(["login","register","checks","dropdowns","buttons","inputs","alerts","tables","navigation","nav-about","nav-contact","dynamic","grid","uiactions","upload","frames","shadow","advform","cart","storage","scroll"].indexOf(h)<0)h="home";
   document.getElementById("home").classList.toggle("hidden",h!=="home");
   document.getElementById("login").classList.toggle("hidden",h!=="login");
   document.getElementById("register").classList.toggle("hidden",h!=="register");
-  ["checks","dropdowns","buttons","inputs","alerts","tables","navigation","nav-about","nav-contact","dynamic","grid","uiactions","upload","frames","shadow","advform"].forEach(function(k){document.getElementById(k).classList.toggle("hidden",h!==k)});
-  document.title=(h==="login"?"Login form | ":h==="register"?"Registration form | ":h==="checks"?"Checkboxes and radio buttons | ":h==="dropdowns"?"Dropdowns | ":h==="buttons"?"Buttons and links | ":h==="inputs"?"Text inputs | ":h==="alerts"?"Alerts and popups | ":h==="tables"?"Static tables | ":h==="navigation"?"Navigation practice | ":h==="nav-about"?"About page | ":h==="nav-contact"?"Contact page | ":h==="dynamic"?"Dynamic elements | ":h==="grid"?"Product table | ":h==="uiactions"?"Mouse actions | ":h==="upload"?"File upload and download | ":h==="frames"?"iFrames and windows | ":h==="shadow"?"Shadow DOM | ":h==="advform"?"Event booking form | ":"")+"QA Practice Lab";
+  ["checks","dropdowns","buttons","inputs","alerts","tables","navigation","nav-about","nav-contact","dynamic","grid","uiactions","upload","frames","shadow","advform","cart","storage","scroll"].forEach(function(k){document.getElementById(k).classList.toggle("hidden",h!==k)});
+  document.title=(h==="login"?"Login form | ":h==="register"?"Registration form | ":h==="checks"?"Checkboxes and radio buttons | ":h==="dropdowns"?"Dropdowns | ":h==="buttons"?"Buttons and links | ":h==="inputs"?"Text inputs | ":h==="alerts"?"Alerts and popups | ":h==="tables"?"Static tables | ":h==="navigation"?"Navigation practice | ":h==="nav-about"?"About page | ":h==="nav-contact"?"Contact page | ":h==="dynamic"?"Dynamic elements | ":h==="grid"?"Product table | ":h==="uiactions"?"Mouse actions | ":h==="upload"?"File upload and download | ":h==="frames"?"iFrames and windows | ":h==="shadow"?"Shadow DOM | ":h==="advform"?"Event booking form | ":h==="cart"?"Shopping cart | ":h==="storage"?"Cookies and storage | ":h==="scroll"?"Infinite scroll | ":"")+"QA Practice Lab";
   if(h==="login")prefill();
   window.scrollTo(0,0);
 }
@@ -994,6 +1097,102 @@ g("abForm").addEventListener("submit",function(ev){
   g("abResult").textContent="Event booked: "+g("abName").value.trim()+", "+g("abPeople").value+" attendees, "+g("abType").value+" ticket.";
   g("abResult").className="alert success";
 });
+var CP={notebook:["Notebook",250],pens:["Pen set",120],bag:["Backpack",1200],bottle:["Water bottle",450]},cart={},coupon=false;
+function inr(n){return "\u20b9"+n}
+function cm(t){g("cMsg").textContent=t}
+function cartRender(){
+  var ids=Object.keys(cart),sub=0,h="";
+  ids.forEach(function(k){
+    var q=cart[k],p=CP[k],lt=p[1]*q;sub+=lt;
+    h+='<tr data-item="'+k+'"><td>'+p[0]+'</td><td><button type="button" class="ghost" data-act="dec" data-testid="dec-'+k+'" aria-label="Decrease '+p[0]+'">-</button> <span data-testid="qty-'+k+'">'+q+'</span> <button type="button" class="ghost" data-act="inc" data-testid="inc-'+k+'" aria-label="Increase '+p[0]+'">+</button></td><td data-testid="line-'+k+'">'+inr(lt)+'</td><td><button type="button" class="ghost" data-act="rm" data-testid="remove-'+k+'">Remove</button></td></tr>';
+  });
+  g("cartBody").innerHTML=ids.length?h:'<tr><td colspan="4" data-testid="cart-empty">Your cart is empty.</td></tr>';
+  var d=coupon?Math.round(sub*0.1):0,tax=Math.round((sub-d)*0.18),tot=sub-d+tax;
+  g("cSub").textContent=inr(sub);g("cDisc").textContent=inr(d);g("cTax").textContent=inr(tax);g("cTotal").firstChild.textContent=inr(tot);
+  g("cCheckout").disabled=!ids.length;
+  return tot;
+}
+[].forEach.call(document.querySelectorAll("#cart [data-add]"),function(b){b.addEventListener("click",function(){
+  var k=b.getAttribute("data-add");
+  if((cart[k]||0)>=5){cm("Maximum 5 per item.");return}
+  cart[k]=(cart[k]||0)+1;cm("");g("cOrder").className="alert success hidden";cartRender();
+})});
+g("cartBody").addEventListener("click",function(e){
+  var b=e.target.closest("button");if(!b)return;
+  var k=b.closest("tr").getAttribute("data-item"),a=b.getAttribute("data-act");
+  if(a==="inc"){if(cart[k]>=5){cm("Maximum 5 per item.");return}cart[k]++}
+  else if(a==="dec"){cart[k]--;if(cart[k]<1)delete cart[k]}
+  else delete cart[k];
+  cm("");cartRender();
+});
+g("cCouponBtn").addEventListener("click",function(){
+  var v=g("cCoupon").value.trim(),m=g("cCouponMsg");
+  if(coupon){m.textContent="Coupon already applied.";return}
+  if(v==="QA10"){coupon=true;m.textContent="Coupon applied: 10% off.";cartRender()}
+  else m.textContent="Invalid coupon code.";
+});
+g("cCheckout").addEventListener("click",function(){
+  var t=cartRender();
+  g("cOrder").textContent="Order placed. Total: "+inr(t);g("cOrder").className="alert success";
+  cart={};coupon=false;g("cCoupon").value="";g("cCouponMsg").textContent="";cartRender();
+});
+cartRender();
+function sf(f){try{return f()}catch(e){return null}}
+function rc(){var m=document.cookie.split("; ").filter(function(c){return c.indexOf("qa_user=")===0})[0];return m?decodeURIComponent(m.split("=")[1]):null}
+g("ckSet").addEventListener("click",function(){
+  var v=g("ckVal").value.trim();
+  if(!v){g("ckOut").textContent="Enter a value first.";return}
+  document.cookie="qa_user="+encodeURIComponent(v)+"; max-age=86400; path=/; SameSite=Lax";
+  g("ckOut").textContent="Cookie set: qa_user = "+v;
+});
+g("ckRead").addEventListener("click",function(){var v=rc();g("ckOut").textContent=v===null?"No cookie found":"Cookie value: "+v});
+g("ckDel").addEventListener("click",function(){document.cookie="qa_user=; max-age=0; path=/";g("ckOut").textContent="Cookie deleted"});
+function lsKeys(){return Object.keys(localStorage).filter(function(k){return k.indexOf("qalab_")===0})}
+function lsMsg(t){g("lsOut").textContent=t}
+g("lsSave").addEventListener("click",function(){
+  var k=g("lsKey").value.trim();
+  if(!k){lsMsg("Key is required.");return}
+  var ok=sf(function(){localStorage.setItem("qalab_"+k,g("lsVal").value);return 1});
+  lsMsg(ok?"Saved "+k+". Items stored: "+lsKeys().length:"Storage is not available here.");
+});
+g("lsRead").addEventListener("click",function(){
+  var k=g("lsKey").value.trim();
+  if(!k){lsMsg("Key is required.");return}
+  var v=sf(function(){return localStorage.getItem("qalab_"+k)});
+  lsMsg(v===null?"No value for "+k:k+" = "+v);
+});
+g("lsRemove").addEventListener("click",function(){
+  var k=g("lsKey").value.trim();
+  if(!k){lsMsg("Key is required.");return}
+  sf(function(){localStorage.removeItem("qalab_"+k)});lsMsg("Removed "+k+". Items stored: "+(sf(lsKeys)||[]).length);
+});
+g("lsClear").addEventListener("click",function(){
+  sf(function(){lsKeys().forEach(function(k){localStorage.removeItem(k)})});lsMsg("Cleared all. Items stored: 0");
+});
+function ssShow(){var n=sf(function(){return Number(sessionStorage.getItem("qalab_count")||0)})||0;g("ssOut").textContent="Counter: "+n;return n}
+g("ssBtn").addEventListener("click",function(){var n=ssShow()+1;sf(function(){sessionStorage.setItem("qalab_count",n)});ssShow()});
+ssShow();
+var box=g("scrollBox"),shown=0,busy=false,TOTAL=50;
+var io=("IntersectionObserver" in window)?new IntersectionObserver(function(es){es.forEach(function(en){if(en.isIntersecting){var t=en.target;t.setAttribute("data-loaded","true");t.textContent="Loaded";io.unobserve(t)}})},{root:box}):null;
+function addItems(){
+  for(var i=0;i<10&&shown<TOTAL;i++){
+    shown++;
+    var d=document.createElement("div");d.className="sitem";d.setAttribute("data-testid","item-"+shown);
+    var t=document.createElement("span");t.className="thumb";t.setAttribute("data-loaded","false");t.textContent="Loading";
+    d.appendChild(t);d.appendChild(document.createTextNode("Item "+shown));g("scrollList").appendChild(d);
+    if(io)io.observe(t);else{t.setAttribute("data-loaded","true");t.textContent="Loaded"}
+  }
+  g("scrollInfo").textContent="Showing "+shown+" of "+TOTAL;
+  g("scrollEnd").classList.toggle("hidden",shown<TOTAL);
+}
+box.addEventListener("scroll",function(){
+  if(busy||shown>=TOTAL)return;
+  if(box.scrollTop+box.clientHeight>=box.scrollHeight-20){
+    busy=true;g("scrollLoad").classList.remove("hidden");
+    setTimeout(function(){g("scrollLoad").classList.add("hidden");addItems();busy=false},800);
+  }
+});
+addItems();
 document.getElementById("themeBtn").addEventListener("click",function(){
   var r=document.documentElement,dark=r.getAttribute("data-theme")==="dark"||(!r.getAttribute("data-theme")&&matchMedia("(prefers-color-scheme:dark)").matches);
   r.setAttribute("data-theme",dark?"light":"dark");
