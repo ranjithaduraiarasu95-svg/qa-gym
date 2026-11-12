@@ -57,6 +57,9 @@ select,textarea{width:100%;padding:11px 12px;font:inherit;color:var(--ink);backg
 input[type=number]{width:100%;padding:11px 12px;font:inherit;color:var(--ink);background:var(--bg);border:1.5px solid var(--line);border-radius:6px}input[type=number].bad{border-color:var(--err)}
 .stat{margin-top:16px;padding:12px 14px;border:1.5px dashed var(--line);border-radius:6px;font-weight:600}.row2{display:flex;flex-wrap:wrap;gap:10px;margin-top:12px}.links{display:grid;gap:8px;margin-top:16px}
 .modal{position:fixed;inset:0;background:rgba(0,0,0,.55);display:flex;align-items:center;justify-content:center;padding:20px;z-index:50}.modal .box{background:var(--card);padding:24px;border-radius:10px;max-width:380px;width:100%}
+.spin{width:18px;height:18px;border:3px solid var(--line);border-top-color:var(--brand);border-radius:50%;animation:sp 1s linear infinite;display:inline-block;vertical-align:middle;margin-right:8px}@keyframes sp{to{transform:rotate(360deg)}}
+.drop{min-height:56px;border:2px dashed var(--line);border-radius:8px;padding:12px;margin-top:10px}.drop.over{border-color:var(--brand)}.drag{display:inline-block;padding:8px 14px;background:var(--hi);color:#14213d;border-radius:6px;cursor:grab;margin-right:8px;font-weight:600}.menu{margin-top:6px;padding:10px;background:var(--bg);border:1px solid var(--line);border-radius:6px}
+th button{background:none;border:0;padding:0;font:600 14px "IBM Plex Sans",sans-serif;color:var(--ink)}input[type=date]{width:100%;padding:11px 12px;font:inherit;color:var(--ink);background:var(--bg);border:1.5px solid var(--line);border-radius:6px}input[type=range]{width:100%}
 .hidden{display:none!important}
 details{border-bottom:1px solid var(--line);padding:10px 0}
 summary{cursor:pointer;font-weight:600}
@@ -87,8 +90,8 @@ footer{margin-top:56px;color:var(--mute);font-size:14px}
     <div class="list" id="list"></div>
   </section>
   <section class="level">
-    <h2>Intermediate <small>coming later</small></h2>
-    <div class="list"><div class="row off"><div><b>Dynamic elements, waits, iframes, file upload</b></div><span class="tag soon">Planned</span></div></div>
+    <h2>Intermediate <small>3 of 10 live, more coming</small></h2>
+    <div class="list" id="list2"></div>
   </section>
   <section class="level">
     <h2>Advanced <small>coming later</small></h2>
@@ -473,7 +476,102 @@ footer{margin-top:56px;color:var(--mute);font-size:14px}
   <section class="panel"><h1 style="font-size:32px" data-testid="contact-heading">Contact page</h1><p class="sub">You are on the Contact page. <a href="#nav-about">Go to About</a></p></section>
 </main>
 
-<footer>Free to use. Built for QA learners. © 2026 Ranjitha Duraiarasu. All 9 beginner scenarios are live.</footer>
+<main id="dynamic" class="hidden">
+  <p><a href="#home">Back to all scenarios</a></p>
+  <div class="lab">
+    <section class="panel" aria-labelledby="dyt">
+      <h2 id="dyt">Dynamic elements</h2>
+      <p class="sub">Things appear, change and become enabled after a delay.</p>
+      <div class="row2">
+        <button class="ghost" type="button" id="dynLoad" data-testid="load-button">Load data (3s)</button>
+        <button class="ghost" type="button" id="dynReveal" data-testid="reveal-button">Reveal element (2s)</button>
+        <button class="ghost" type="button" id="dynStart" data-testid="enable-start">Enable button (3s)</button>
+        <button class="ghost" type="button" id="dynReset" data-testid="dyn-reset">Reset</button>
+      </div>
+      <p id="dynSpin" class="hidden" data-testid="spinner"><span class="spin"></span>Loading…</p>
+      <div id="dynLoaded" class="alert success hidden" data-testid="loaded-message">Data loaded successfully</div>
+      <div id="dynHolder" class="row2" data-testid="dynamic-holder"></div>
+      <div class="row2"><button class="ghost" type="button" id="dynLate" disabled data-testid="late-button">I start disabled</button></div>
+      <div class="stat" id="dynMsg" role="status" data-testid="dynamic-status">Nothing clicked yet</div>
+    </section>
+    <section class="panel" aria-labelledby="dytt">
+      <h2 id="dytt">Scenario 1: Dynamic elements and waits</h2>
+      <p class="sub">Level: Intermediate</p>
+      <div class="hint">Skills practiced: explicit waits, auto-waiting, waiting for visible, hidden, enabled, avoiding fixed sleeps, handling changing IDs.</div>
+      <h3 style="font-size:18px;margin:22px 0 4px">Test cases to write</h3>
+      <details><summary>Loading spinner</summary><p>Click Load data. Wait for the spinner to appear, then disappear. Assert “Data loaded successfully”. Do not use a fixed sleep.</p></details>
+      <details><summary>Delayed element</summary><p>Click Reveal. The button is not in the DOM at first. It appears after about 2 seconds.</p></details>
+      <details><summary>Changing ID</summary><p>The revealed button gets a new random ID each time (<code>dyn-1234</code>). Locate it with the stable <code>data-testid</code> or a text locator.</p></details>
+      <details><summary>Enabled after delay</summary><p>Click Enable button. The disabled button becomes enabled after about 3 seconds. Click it and assert the status text.</p></details>
+      <details><summary>Timeouts</summary><p>Set a 1 second wait and watch the test fail. Then fix it with the right wait.</p></details>
+    </section>
+  </div>
+</main>
+
+<main id="grid" class="hidden">
+  <p><a href="#home">Back to all scenarios</a></p>
+  <div class="lab">
+    <section class="panel" aria-labelledby="grt">
+      <h2 id="grt">Product catalogue</h2>
+      <p class="sub">12 products. Search, filter, sort and page through them.</p>
+      <label for="gridSearch">Search by name</label>
+      <input id="gridSearch" type="text" autocomplete="off" data-testid="grid-search">
+      <label for="gridCat">Category</label>
+      <select id="gridCat" data-testid="grid-category"><option value="">All</option><option>Laptop</option><option>Phone</option><option>Accessory</option></select>
+      <div class="scroll" style="margin-top:14px"><table data-testid="grid-table"><thead><tr>
+        <th id="th-name" aria-sort="ascending"><button type="button" data-key="name" data-testid="sort-name">Name</button></th>
+        <th id="th-category" aria-sort="none"><button type="button" data-key="category" data-testid="sort-category">Category</button></th>
+        <th id="th-price" aria-sort="none"><button type="button" data-key="price" data-testid="sort-price">Price</button></th>
+      </tr></thead><tbody id="gridBody"></tbody></table></div>
+      <p class="count" id="gridInfo" data-testid="grid-info" aria-live="polite"></p>
+      <div class="btns"><button class="ghost" type="button" id="gridPrev" data-testid="grid-prev">Previous</button><button class="ghost" type="button" id="gridNext" data-testid="grid-next">Next</button></div>
+    </section>
+    <section class="panel" aria-labelledby="grtt">
+      <h2 id="grtt">Scenario 2: Sortable, filterable, paginated table</h2>
+      <p class="sub">Level: Intermediate</p>
+      <div class="hint">Skills practiced: reading table data, asserting sort order, filter results, pagination, aria-sort, empty state.</div>
+      <h3 style="font-size:18px;margin:22px 0 4px">Test cases to write</h3>
+      <details><summary>Initial state</summary><p>5 rows on page 1, sorted by Name ascending. Info reads “12 results. Page 1 of 3”. Previous is disabled.</p></details>
+      <details><summary>Pagination</summary><p>Go to page 3. It has 2 rows and Next is disabled. Go back to page 1.</p></details>
+      <details><summary>Sort by price</summary><p>Click Price: ascending (cheapest is Core Mouse, 799). Click again: descending (Delta Laptop 16, 89999). Read all prices and verify the order in code.</p></details>
+      <details><summary>Filter by category</summary><p>Laptop gives 4 results, Phone 3, Accessory 5. Page resets to 1.</p></details>
+      <details><summary>Search</summary><p>Type <code>laptop</code> for 4 results (case insensitive). Combine with a category filter. Type <code>zzz</code> to see “No products found”.</p></details>
+    </section>
+  </div>
+</main>
+
+<main id="uiactions" class="hidden">
+  <p><a href="#home">Back to all scenarios</a></p>
+  <div class="lab">
+    <section class="panel" aria-labelledby="uit">
+      <h2 id="uit">Mouse actions</h2>
+      <p class="sub">Hover, drag and drop, slider and date picker. Drag and drop needs a mouse.</p>
+      <label>Hover menu</label>
+      <div class="ghost" id="hoverBox" tabindex="0" style="display:inline-block;padding:10px 16px;border:1.5px solid var(--brand);border-radius:6px;color:var(--brand);font-weight:600" data-testid="hover-target">Hover over me</div>
+      <div id="hoverMenu" class="menu hidden" data-testid="hover-menu">Hello from the hover menu</div>
+      <label>Drag a task into Done</label>
+      <div><span class="drag" id="drag1" draggable="true" data-testid="drag-a">Task A</span><span class="drag" id="drag2" draggable="true" data-testid="drag-b">Task B</span></div>
+      <div class="drop" id="dropZone" data-testid="drop-zone">Drop here</div>
+      <label for="slider">Slider: <output id="sliderVal" data-testid="slider-value">50</output></label>
+      <input id="slider" type="range" min="0" max="100" value="50" data-testid="slider">
+      <label for="datePick">Date picker</label>
+      <input id="datePick" type="date" data-testid="date-input">
+      <div class="stat" id="dateOut" data-testid="date-output">No date selected</div>
+    </section>
+    <section class="panel" aria-labelledby="uitt">
+      <h2 id="uitt">Scenario 3: Hover, drag and drop, slider, date picker</h2>
+      <p class="sub">Level: Intermediate</p>
+      <div class="hint">Skills practiced: hover actions, drag and drop, keyboard on a slider, filling date inputs, asserting hidden and visible content.</div>
+      <h3 style="font-size:18px;margin:22px 0 4px">Test cases to write</h3>
+      <details><summary>Hover</summary><p>The menu is hidden. Hover over the target and it becomes visible. Move the mouse away and it hides again.</p></details>
+      <details><summary>Drag and drop</summary><p>Drag Task A to the drop zone. The zone reads “Dropped: Task A”. Then drag Task B and it reads “Dropped: Task B”.</p></details>
+      <details><summary>Slider</summary><p>Default is 50. Set it to 0 and 100 by keyboard or script and assert the value text. Press the arrow key once and the value changes by 1.</p></details>
+      <details><summary>Date picker</summary><p>Fill <code>2026-12-25</code>. Output reads “Selected: 2026-12-25 (Friday)”. Clear it and the output goes back to the default.</p></details>
+    </section>
+  </div>
+</main>
+
+<footer>Free to use. Built for QA learners. 9 beginner and 3 intermediate scenarios are live.</footer>
 </div>
 
 <script>
@@ -498,14 +596,24 @@ SCENARIOS.forEach(function(s,i){
   list.appendChild(el);
 });
 
+var INTER=[["dynamic","Dynamic elements and waits","Spinners, delayed elements, changing IDs, enabled after delay",1],["grid","Sortable, filterable, paginated table","Search, filter, sort columns, next and previous page",1],["uiactions","Hover, drag and drop, slider, date picker","Mouse actions and special inputs",1],["","File upload and download","Validate type, size and content",0],["","iFrames and multiple windows","Switch frames, tabs and windows",0],["","Shadow DOM","Elements inside shadow roots",0],["","Advanced form validation","Inline errors and cross-field rules",0],["","Shopping cart flow","Add, remove, update quantity, totals",0],["","Cookies and local storage","Read, set and clear browser storage",0],["","Infinite scroll and lazy loading","Content that loads while scrolling",0]];
+var list2=document.getElementById("list2");
+INTER.forEach(function(s,i){
+  var el=document.createElement(s[3]?"a":"div");
+  el.className="row"+(s[3]?"":" off");
+  if(s[3])el.href="#"+s[0];
+  el.setAttribute("data-testid","inter-"+(i+1));
+  el.innerHTML="<div><b>"+(i+1)+". "+s[1]+"</b><span class='d'>"+s[2]+"</span></div><span class='tag "+(s[3]?"live":"soon")+"'>"+(s[3]?"Live":"Coming soon")+"</span>";
+  list2.appendChild(el);
+});
 function route(){
   var h=(location.hash||"#home").slice(1);
-  if(["login","register","checks","dropdowns","buttons","inputs","alerts","tables","navigation","nav-about","nav-contact"].indexOf(h)<0)h="home";
+  if(["login","register","checks","dropdowns","buttons","inputs","alerts","tables","navigation","nav-about","nav-contact","dynamic","grid","uiactions"].indexOf(h)<0)h="home";
   document.getElementById("home").classList.toggle("hidden",h!=="home");
   document.getElementById("login").classList.toggle("hidden",h!=="login");
   document.getElementById("register").classList.toggle("hidden",h!=="register");
-  ["checks","dropdowns","buttons","inputs","alerts","tables","navigation","nav-about","nav-contact"].forEach(function(k){document.getElementById(k).classList.toggle("hidden",h!==k)});
-  document.title=(h==="login"?"Login form | ":h==="register"?"Registration form | ":h==="checks"?"Checkboxes and radio buttons | ":h==="dropdowns"?"Dropdowns | ":h==="buttons"?"Buttons and links | ":h==="inputs"?"Text inputs | ":h==="alerts"?"Alerts and popups | ":h==="tables"?"Static tables | ":h==="navigation"?"Navigation practice | ":h==="nav-about"?"About page | ":h==="nav-contact"?"Contact page | ":"")+"QA Practice Lab";
+  ["checks","dropdowns","buttons","inputs","alerts","tables","navigation","nav-about","nav-contact","dynamic","grid","uiactions"].forEach(function(k){document.getElementById(k).classList.toggle("hidden",h!==k)});
+  document.title=(h==="login"?"Login form | ":h==="register"?"Registration form | ":h==="checks"?"Checkboxes and radio buttons | ":h==="dropdowns"?"Dropdowns | ":h==="buttons"?"Buttons and links | ":h==="inputs"?"Text inputs | ":h==="alerts"?"Alerts and popups | ":h==="tables"?"Static tables | ":h==="navigation"?"Navigation practice | ":h==="nav-about"?"About page | ":h==="nav-contact"?"Contact page | ":h==="dynamic"?"Dynamic elements | ":h==="grid"?"Product table | ":h==="uiactions"?"Mouse actions | ":"")+"QA Practice Lab";
   if(h==="login")prefill();
   window.scrollTo(0,0);
 }
@@ -665,6 +773,65 @@ document.addEventListener("keydown",function(e){if(e.key==="Escape"&&!g("modal")
 g("backBtn").addEventListener("click",function(){history.back()});
 g("fwdBtn").addEventListener("click",function(){history.forward()});
 g("infoBtn").addEventListener("click",function(){g("navInfo").textContent="Title: "+document.title+" | URL: "+location.href});
+var tm=[];
+function later(f,ms){tm.push(setTimeout(f,ms))}
+function dm(t){g("dynMsg").textContent=t}
+g("dynLoad").addEventListener("click",function(){
+  g("dynLoaded").classList.add("hidden");g("dynSpin").classList.remove("hidden");
+  later(function(){g("dynSpin").classList.add("hidden");g("dynLoaded").classList.remove("hidden")},3000);
+});
+g("dynReveal").addEventListener("click",function(){
+  g("dynHolder").innerHTML="";
+  later(function(){
+    var b=document.createElement("button");
+    b.type="button";b.className="ghost";b.id="dyn-"+Math.floor(1000+Math.random()*9000);
+    b.setAttribute("data-testid","dynamic-button");b.textContent="I appeared!";
+    b.addEventListener("click",function(){dm("Dynamic button clicked")});
+    g("dynHolder").appendChild(b);
+  },2000);
+});
+g("dynStart").addEventListener("click",function(){later(function(){g("dynLate").disabled=false;g("dynLate").textContent="I am enabled now"},3000)});
+g("dynLate").addEventListener("click",function(){dm("Late button clicked")});
+g("dynReset").addEventListener("click",function(){
+  tm.forEach(clearTimeout);tm=[];
+  g("dynSpin").classList.add("hidden");g("dynLoaded").classList.add("hidden");g("dynHolder").innerHTML="";
+  g("dynLate").disabled=true;g("dynLate").textContent="I start disabled";dm("Nothing clicked yet");
+});
+var PR=[["Aero Laptop 14","Laptop",64999],["Bolt Phone X","Phone",24999],["Core Mouse","Accessory",799],["Delta Laptop 16","Laptop",89999],["Echo Earbuds","Accessory",2499],["Flux Phone Pro","Phone",54999],["Glide Keyboard","Accessory",1799],["Halo Laptop Air","Laptop",74999],["Ion Phone Lite","Phone",12999],["Jet Charger","Accessory",999],["Kite Laptop Mini","Laptop",45999],["Lumen Webcam","Accessory",3299]];
+var gs={q:"",c:"",k:"name",d:1,p:1},KEYS={name:0,category:1,price:2};
+function renderGrid(){
+  var r=PR.filter(function(x){return x[0].toLowerCase().indexOf(gs.q)>-1&&(!gs.c||x[1]===gs.c)});
+  var ix=KEYS[gs.k];
+  r.sort(function(a,b){return (a[ix]>b[ix]?1:a[ix]<b[ix]?-1:0)*gs.d});
+  var pages=Math.max(1,Math.ceil(r.length/5));if(gs.p>pages)gs.p=pages;
+  var s=r.slice((gs.p-1)*5,gs.p*5);
+  g("gridBody").innerHTML=s.length?s.map(function(x){return "<tr><td>"+x[0]+"</td><td>"+x[1]+"</td><td>"+x[2]+"</td></tr>"}).join(""):'<tr><td colspan="3" data-testid="no-results">No products found</td></tr>';
+  g("gridInfo").textContent=r.length+" results. Page "+gs.p+" of "+pages;
+  g("gridPrev").disabled=gs.p<=1;g("gridNext").disabled=gs.p>=pages;
+  for(var k in KEYS)g("th-"+k).setAttribute("aria-sort",k===gs.k?(gs.d===1?"ascending":"descending"):"none");
+}
+g("gridSearch").addEventListener("input",function(){gs.q=this.value.trim().toLowerCase();gs.p=1;renderGrid()});
+g("gridCat").addEventListener("change",function(){gs.c=this.value;gs.p=1;renderGrid()});
+[].forEach.call(document.querySelectorAll("#grid th button"),function(b){b.addEventListener("click",function(){
+  var k=b.getAttribute("data-key");gs.d=gs.k===k?-gs.d:1;gs.k=k;gs.p=1;renderGrid();
+})});
+g("gridPrev").addEventListener("click",function(){gs.p--;renderGrid()});
+g("gridNext").addEventListener("click",function(){gs.p++;renderGrid()});
+renderGrid();
+var hb=g("hoverBox"),hm=g("hoverMenu");
+function hv(on){hm.classList.toggle("hidden",!on)}
+hb.addEventListener("mouseenter",function(){hv(true)});hb.addEventListener("mouseleave",function(){hv(false)});
+hb.addEventListener("focus",function(){hv(true)});hb.addEventListener("blur",function(){hv(false)});
+["drag1","drag2"].forEach(function(i){g(i).addEventListener("dragstart",function(e){e.dataTransfer.setData("text/plain",this.textContent)})});
+var dz=g("dropZone");
+dz.addEventListener("dragover",function(e){e.preventDefault();dz.classList.add("over")});
+dz.addEventListener("dragleave",function(){dz.classList.remove("over")});
+dz.addEventListener("drop",function(e){e.preventDefault();dz.classList.remove("over");dz.textContent="Dropped: "+e.dataTransfer.getData("text/plain")});
+g("slider").addEventListener("input",function(){g("sliderVal").textContent=this.value});
+g("datePick").addEventListener("change",function(){
+  var v=this.value;
+  g("dateOut").textContent=v?"Selected: "+v+" ("+new Date(v+"T00:00:00").toLocaleDateString("en-US",{weekday:"long"})+")":"No date selected";
+});
 document.getElementById("themeBtn").addEventListener("click",function(){
   var r=document.documentElement,dark=r.getAttribute("data-theme")==="dark"||(!r.getAttribute("data-theme")&&matchMedia("(prefers-color-scheme:dark)").matches);
   r.setAttribute("data-theme",dark?"light":"dark");
