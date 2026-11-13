@@ -3,7 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>QA Practice Lab</title>
+<title>QA Gym</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Crect width='40' height='40' rx='9' fill='%232b50e6'/%3E%3Cpath d='M10 21l7.5 7.5L31 12' fill='none' stroke='white' stroke-width='5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;800&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
@@ -20,7 +21,7 @@ a{color:var(--brand)}
 .wrap{max-width:880px;margin:0 auto;padding:28px 20px 64px}
 header.top{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:36px}
 .logo{font:800 20px "Bricolage Grotesque",sans-serif;text-decoration:none;color:var(--ink)}
-.logo span{background:var(--hi);color:#14213d;padding:0 6px;border-radius:4px}
+.logo{display:inline-flex;align-items:center;gap:10px}.logo span{background:var(--hi);color:#14213d;padding:0 6px;border-radius:4px}
 .hero h1{font-size:clamp(34px,7vw,60px);font-weight:800;max-width:14ch}
 .hero p{max-width:56ch;color:var(--mute);font-size:18px;margin:16px 0 0}
 .level{margin-top:44px}
@@ -77,7 +78,7 @@ footer{margin-top:56px;color:var(--mute);font-size:14px}
 <body>
 <div class="wrap">
 <header class="top">
-  <a class="logo" href="#home">QA Practice <span>Lab</span></a>
+  <a class="logo" href="#home" aria-label="QA Gym home"><svg viewBox="0 0 40 40" width="34" height="34" aria-hidden="true"><rect width="40" height="40" rx="9" fill="#2b50e6"/><path d="M10 21l7.5 7.5L31 12" fill="none" stroke="#fff" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/></svg>QA <span>Gym</span></a>
   <button class="ghost" id="themeBtn" type="button" aria-label="Toggle dark mode">Theme</button>
 </header>
 
@@ -790,7 +791,7 @@ footer{margin-top:56px;color:var(--mute);font-size:14px}
   </div>
 </main>
 
-<footer>Free to use. Built for QA learners. © 2026 Ranjitha Duraiarasu. 9 beginner and 10 intermediate scenarios are live.</footer>
+<footer>Free to use. Built for QA learners. 9 beginner and 10 intermediate scenarios are live.</footer>
 </div>
 
 <script>
@@ -832,7 +833,7 @@ function route(){
   document.getElementById("login").classList.toggle("hidden",h!=="login");
   document.getElementById("register").classList.toggle("hidden",h!=="register");
   ["checks","dropdowns","buttons","inputs","alerts","tables","navigation","nav-about","nav-contact","dynamic","grid","uiactions","upload","frames","shadow","advform","cart","storage","scroll"].forEach(function(k){document.getElementById(k).classList.toggle("hidden",h!==k)});
-  document.title=(h==="login"?"Login form | ":h==="register"?"Registration form | ":h==="checks"?"Checkboxes and radio buttons | ":h==="dropdowns"?"Dropdowns | ":h==="buttons"?"Buttons and links | ":h==="inputs"?"Text inputs | ":h==="alerts"?"Alerts and popups | ":h==="tables"?"Static tables | ":h==="navigation"?"Navigation practice | ":h==="nav-about"?"About page | ":h==="nav-contact"?"Contact page | ":h==="dynamic"?"Dynamic elements | ":h==="grid"?"Product table | ":h==="uiactions"?"Mouse actions | ":h==="upload"?"File upload and download | ":h==="frames"?"iFrames and windows | ":h==="shadow"?"Shadow DOM | ":h==="advform"?"Event booking form | ":h==="cart"?"Shopping cart | ":h==="storage"?"Cookies and storage | ":h==="scroll"?"Infinite scroll | ":"")+"QA Practice Lab";
+  document.title=(h==="login"?"Login form | ":h==="register"?"Registration form | ":h==="checks"?"Checkboxes and radio buttons | ":h==="dropdowns"?"Dropdowns | ":h==="buttons"?"Buttons and links | ":h==="inputs"?"Text inputs | ":h==="alerts"?"Alerts and popups | ":h==="tables"?"Static tables | ":h==="navigation"?"Navigation practice | ":h==="nav-about"?"About page | ":h==="nav-contact"?"Contact page | ":h==="dynamic"?"Dynamic elements | ":h==="grid"?"Product table | ":h==="uiactions"?"Mouse actions | ":h==="upload"?"File upload and download | ":h==="frames"?"iFrames and windows | ":h==="shadow"?"Shadow DOM | ":h==="advform"?"Event booking form | ":h==="cart"?"Shopping cart | ":h==="storage"?"Cookies and storage | ":h==="scroll"?"Infinite scroll | ":"")+"QA Gym";
   if(h==="login")prefill();
   window.scrollTo(0,0);
 }
